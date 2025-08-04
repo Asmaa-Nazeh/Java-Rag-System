@@ -1,32 +1,34 @@
 package com.asmaa.rag;
 
-import java.util.*;
+import java.util.List;
 
 public class TextEmbedder {
+    private RemoteEmbedder remoteEmbedder;
 
-    private final Map<String, Integer> vocabulary = new HashMap<>();
+    public TextEmbedder() {
+        // ممكن تغيري الـ URL لو بتشغلي API من مكان تاني
+        this.remoteEmbedder = new RemoteEmbedder("http://127.0.0.1:5005/embed");
+    }
 
     public float[] embed(String text) {
-        String[] words = text.toLowerCase().replaceAll("[^a-zA-Z ]", "").split("\\s+");
-
-        for (String word : words) {
-            vocabulary.putIfAbsent(word, vocabulary.size());
+        try {
+            List<Float> vector = remoteEmbedder.embed(text);
+            float[] result = new float[vector.size()];
+            for (int i = 0; i < vector.size(); i++) {
+                result[i] = vector.get(i);
+            }
+            return result;
+        } catch (Exception e) {
+            System.err.println("Failed to get embedding: " + e.getMessage());
+            return new float[0];
         }
-
-        float[] vector = new float[vocabulary.size()];
-        for (String word : words) {
-            int index = vocabulary.get(word);
-            vector[index] += 1.0f;
-        }
-
-        return vector;
     }
 
     public void printVector(float[] vector) {
-        System.out.print("Vector: [");
+        System.out.print("[");
         for (int i = 0; i < vector.length; i++) {
             System.out.print(vector[i]);
-            if (i < vector.length - 1) System.out.print(", ");
+            if (i != vector.length - 1) System.out.print(", ");
         }
         System.out.println("]");
     }

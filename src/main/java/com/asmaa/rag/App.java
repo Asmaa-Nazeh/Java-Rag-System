@@ -7,12 +7,24 @@ public class App {
         TextFileLoader loader = new TextFileLoader();
         List<Document> documents = loader.loadDocuments();
 
-        TextEmbedder embedder = new TextEmbedder();
+        RemoteEmbedder embedder = new RemoteEmbedder("http://127.0.0.1:5005/embed");
+        MilvusVectorStore vectorStore = new MilvusVectorStore("127.0.0.1", 19530); // Connect to Milvus
 
         for (Document doc : documents) {
             System.out.println(doc);
-            float[] vector = embedder.embed(doc.getContent());
-            embedder.printVector(vector);
+
+            List<Float> vector = embedder.embed(doc.getContent());
+            System.out.println(vector);
+
+            // Convert List<Float> to float[] for Milvus
+            float[] floatArray = new float[vector.size()];
+            for (int i = 0; i < vector.size(); i++) {
+                floatArray[i] = vector.get(i);
+            }
+
+            vectorStore.insertEmbedding(floatArray); // Store in Milvus
         }
+
+        vectorStore.close(); // Always close connection
     }
 }
