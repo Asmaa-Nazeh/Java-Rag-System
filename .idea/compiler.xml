@@ -12,7 +12,7 @@
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
-      <module name="JavaRAGProject" options="-parameters" />
+      <module name="JavaRAGProject" options="" />
     </option>
   </component>
 </project>
