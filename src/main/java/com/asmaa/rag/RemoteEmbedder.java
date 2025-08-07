@@ -16,12 +16,10 @@ public class RemoteEmbedder {
     private final String endpoint;
     private final Gson gson = new Gson();
 
-    // ✅ ده الـ constructor اللي محتاجينه
     public RemoteEmbedder(String endpoint) {
         this.endpoint = endpoint;
     }
 
-    // ✅ دي الدالة embed اللي محتاجينها
     public List<Float> embed(String text) {
         try {
             URL url = new URL(endpoint);

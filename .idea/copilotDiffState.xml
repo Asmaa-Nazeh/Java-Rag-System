@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CopilotDiffPersistence">
+    <option name="pendingDiffs">
+      <map>
+        <entry key="$PROJECT_DIR$/src/main/java/ConsoleRagApp.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/main/java/ConsoleRagApp.java" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+        <entry key="$PROJECT_DIR$/src/main/java/retrieval/MilvusConnectionTest.java">
+          <value>
+            <PendingDiffInfo>
+              <option name="filePath" value="$PROJECT_DIR$/src/main/java/retrieval/MilvusConnectionTest.java" />
+              <option name="updatedContent" value="package retrieval;&#10;&#10;import io.milvus.client.MilvusServiceClient;&#10;import io.milvus.param.ConnectParam;&#10;import io.milvus.param.R;&#10;import io.milvus.param.collection.HasCollectionParam;&#10;import io.milvus.param.collection.GetCollectionStatisticsParam;&#10;import io.milvus.grpc.GetCollectionStatisticsResponse;&#10;&#10;import java.util.concurrent.TimeUnit;&#10;&#10;public class MilvusConnectionTest {&#10;    public static void main(String[] args) {&#10;        System.out.println(&quot; Testing Milvus connection and collection status...&quot;);&#10;        &#10;        ConnectParam connectParam = ConnectParam.newBuilder()&#10;                .withHost(&quot;127.0.0.1&quot;)&#10;                .withPort(19530)&#10;                .withConnectTimeout(10, TimeUnit.SECONDS)&#10;                .build();&#10;        &#10;        MilvusServiceClient client = new MilvusServiceClient(connectParam);&#10;        &#10;        try {&#10;            // Check if collection exists&#10;            HasCollectionParam hasCollectionParam = HasCollectionParam.newBuilder()&#10;                    .withCollectionName(&quot;text_embeddings&quot;)&#10;                    .build();&#10;            &#10;            R&lt;Boolean&gt; hasCollection = client.hasCollection(hasCollectionParam);&#10;            if (hasCollection.getStatus() != R.Status.Success.getCode()) {&#10;                System.out.println(&quot;❌ Failed to check collection existence: &quot; + hasCollection.getMessage());&#10;                return;&#10;            }&#10;            &#10;            if (!hasCollection.getData()) {&#10;                System.out.println(&quot;❌ Collection 'text_embeddings' does not exist!&quot;);&#10;                System.out.println(&quot; You need to create and populate the collection first.&quot;);&#10;                return;&#10;            }&#10;            &#10;            System.out.println(&quot;✅ Collection 'text_embeddings' exists&quot;);&#10;            &#10;            // Check collection statistics (number of entities)&#10;            GetCollectionStatisticsParam statsParam = GetCollectionStatisticsParam.newBuilder()&#10;                    .withCollectionName(&quot;text_embeddings&quot;)&#10;                    .build();&#10;            &#10;            R&lt;GetCollectionStatisticsResponse&gt; statsResponse = client.getCollectionStatistics(statsParam);&#10;            if (statsResponse.getStatus() == R.Status.Success.getCode()) {&#10;                System.out.println(&quot; Collection statistics: &quot; + statsResponse.getData().getStatsMap());&#10;                &#10;                // Check if collection has data&#10;                String rowCount = statsResponse.getData().getStatsMap().get(&quot;row_count&quot;);&#10;                if (rowCount != null &amp;&amp; !&quot;0&quot;.equals(rowCount)) {&#10;                    System.out.println(&quot;✅ Collection has &quot; + rowCount + &quot; documents&quot;);&#10;                } else {&#10;                    System.out.println(&quot;⚠️ Collection is empty! You need to ingest data first.&quot;);&#10;                }&#10;            }&#10;            &#10;        } catch (Exception e) {&#10;            System.out.println(&quot;❌ Error connecting to Milvus: &quot; + e.getMessage());&#10;            e.printStackTrace();&#10;        } finally {&#10;            client.close();&#10;        }&#10;    }&#10;}" />
+            </PendingDiffInfo>
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>

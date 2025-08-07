@@ -1,35 +1,40 @@
 package com.asmaa.rag;
 
-import java.util.List;
+import java.util.*;
+import com.google.gson.Gson;
 
 public class App {
     public static void main(String[] args) {
         try {
-            // ✅ تأخير عشان تضمني إن Milvus و الـ embedding server اشتغلوا
-
-
-            TextFileLoader loader = new TextFileLoader();
-            List<Document> documents = loader.loadDocuments();
+            SimpleDocumentLoader loader = new SimpleDocumentLoader();
+            List<Map<String, String>> documents = loader.loadDocuments();
+            Gson gson = new Gson();
 
             RemoteEmbedder embedder = new RemoteEmbedder("http://127.0.0.1:5005/embed");
-            MilvusVectorStore vectorStore = new MilvusVectorStore("127.0.0.1", 19530); // Connect to Milvus
+            MilvusVectorStore vectorStore = new MilvusVectorStore("127.0.0.1", 19530);
 
-            for (Document doc : documents) {
-                System.out.println(doc);
+            for (Map<String, String> doc : documents) {
+                String content = doc.get("content");
+                String[] lines = content.split("\\r?\\n");
+                int lineNumber = 0;
 
-                List<Float> vector = embedder.embed(doc.getContent());
-                System.out.println(vector);
+                for (String line : lines) {
+                    line = line.trim();
+                    if (line.isEmpty()) continue;
 
-                // Convert List<Float> to float[] for Milvus
-                float[] floatArray = new float[vector.size()];
-                for (int i = 0; i < vector.size(); i++) {
-                    floatArray[i] = vector.get(i);
+                    List<Float> vector = embedder.embed(line);
+                    float[] floatArray = new float[vector.size()];
+                    for (int i = 0; i < vector.size(); i++) {
+                        floatArray[i] = vector.get(i);
+                    }
+
+                    Map<String, Object> meta = new HashMap<>();
+                    meta.put("line_number", ++lineNumber);
+                    meta.put("timestamp", System.currentTimeMillis());
+
+                    vectorStore.insertTextWithEmbedding(line, floatArray, gson.toJson(meta));
                 }
-
-                vectorStore.insertEmbedding(floatArray); // Store in Milvus
             }
-
-            vectorStore.close(); // Always close connection
 
         } catch (Exception e) {
             e.printStackTrace();
