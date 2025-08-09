@@ -1,4 +1,4 @@
-package com.asmaa.rag;
+package ingestion;
 
 import java.util.*;
 import com.google.gson.Gson;

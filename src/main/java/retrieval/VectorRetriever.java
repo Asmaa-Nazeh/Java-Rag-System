@@ -1,7 +1,7 @@
 package retrieval;
 
-import com.asmaa.rag.RemoteEmbedder;
-import com.asmaa.rag.MilvusConnection;
+import ingestion.RemoteEmbedder;
+import ingestion.MilvusConnection;
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.grpc.SearchResults;
 import io.milvus.param.R;
