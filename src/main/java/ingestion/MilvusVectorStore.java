@@ -1,4 +1,4 @@
-package com.asmaa.rag;
+package ingestion;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;

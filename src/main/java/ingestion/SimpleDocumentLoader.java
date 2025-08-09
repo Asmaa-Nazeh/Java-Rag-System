@@ -1,4 +1,4 @@
-package com.asmaa.rag;
+package ingestion;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package com.asmaa.rag;
+package ingestion;
 
 import io.milvus.client.MilvusServiceClient;
 import io.milvus.param.ConnectParam;

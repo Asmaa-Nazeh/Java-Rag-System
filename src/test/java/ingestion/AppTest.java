@@ -1,4 +1,4 @@
-package com.asmaa.rag;
+package ingestion;
 
 import junit.framework.Test;
 import junit.framework.TestCase;
